@@ -1,2 +1,3 @@
-# template
-프로젝트 템플릿
+# Stopover-Service
+
+경유지 관련 기능을 담은 서비스입니다.
