@@ -1,5 +1,6 @@
 package com.oeso.stopoverservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +14,12 @@ public class StopoverResponse {
 
     int localNo;
 
+//    String localName;
+
+    @JsonProperty("name")
     String stopoverName;
 
+    @JsonProperty("order")
     int stopoverOrder;
 
 }

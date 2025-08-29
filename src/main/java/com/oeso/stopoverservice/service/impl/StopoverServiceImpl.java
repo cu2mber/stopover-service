@@ -22,11 +22,11 @@ public class StopoverServiceImpl implements StopoverService {
     @Override
     public StopoverResponse create(StopoverRequest request) {
 
-        if(stopoverRepository.existsByLocalAndStopover(request.getLocalNo(), request.getName())) {
+        if(stopoverRepository.existsByLocalAndStopover(request.getLocalNo(), request.getStopoverName())) {
             throw new ConflictException();
         }
 
-        Stopover stopover = Stopover.ofNewStopover(request.getLocalNo(), request.getName(), request.getOrder());
+        Stopover stopover = Stopover.ofNewStopover(request.getLocalNo(), request.getStopoverName(), request.getStopoverOrder());
         stopoverRepository.save(stopover);
 
         return getStopoverResponse(stopover);

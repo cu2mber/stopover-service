@@ -1,5 +1,6 @@
 package com.oeso.stopoverservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -13,7 +14,9 @@ public class StopoverRequest {
     int localNo;
 
     @NotBlank(message = "회의실 번호는 필수입니다.")
-    String name;
+    @JsonProperty("name")
+    String stopoverName;
 
-    int order;
+    @JsonProperty("order")
+    int stopoverOrder;
 }
