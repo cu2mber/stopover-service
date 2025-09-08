@@ -1,12 +1,12 @@
-package com.oeso.stopoverservice.service.impl;
+package com.cu2mber.stopoverservice.service.impl;
 
-import com.oeso.stopoverservice.common.exception.ConflictException;
-import com.oeso.stopoverservice.common.exception.NotFoundException;
-import com.oeso.stopoverservice.domain.Stopover;
-import com.oeso.stopoverservice.dto.StopoverRequest;
-import com.oeso.stopoverservice.dto.StopoverResponse;
-import com.oeso.stopoverservice.repository.StopoverRepository;
-import com.oeso.stopoverservice.service.StopoverService;
+import com.cu2mber.stopoverservice.common.exception.ConflictException;
+import com.cu2mber.stopoverservice.common.exception.NotFoundException;
+import com.cu2mber.stopoverservice.dto.StopoverRequest;
+import com.cu2mber.stopoverservice.dto.StopoverResponse;
+import com.cu2mber.stopoverservice.repository.StopoverRepository;
+import com.cu2mber.stopoverservice.service.StopoverService;
+import com.cu2mber.stopoverservice.domain.Stopover;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,4 +1,4 @@
-package com.oeso.stopoverservice.domain;
+package com.cu2mber.stopoverservice.domain;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,4 +1,4 @@
-package com.oeso.stopoverservice.common.config;
+package com.cu2mber.stopoverservice.common.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

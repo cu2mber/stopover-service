@@ -1,4 +1,4 @@
-package com.oeso.stopoverservice.common.exception;
+package com.cu2mber.stopoverservice.common.exception;
 
 public class NotFoundException extends CommonHttpException{
 

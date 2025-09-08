@@ -1,4 +1,4 @@
-package com.oeso.stopoverservice.common.exception;
+package com.cu2mber.stopoverservice.common.exception;
 
 public class BadRequestException extends CommonHttpException{
     private static final int STATUS_CODE = 401;

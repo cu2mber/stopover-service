@@ -8,7 +8,7 @@
 		<version>3.5.5</version>
 		<relativePath/>
 	</parent>
-	<groupId>com.oeso</groupId>
+	<groupId>com.cu2mber</groupId>
 	<artifactId>stopover-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>stopover-service</name>

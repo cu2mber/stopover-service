@@ -1,4 +1,4 @@
-package com.oeso.stopoverservice.dto;
+package com.cu2mber.stopoverservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;

@@ -1,7 +1,7 @@
-package com.oeso.stopoverservice.service;
+package com.cu2mber.stopoverservice.service;
 
-import com.oeso.stopoverservice.dto.StopoverRequest;
-import com.oeso.stopoverservice.dto.StopoverResponse;
+import com.cu2mber.stopoverservice.dto.StopoverRequest;
+import com.cu2mber.stopoverservice.dto.StopoverResponse;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.oeso.stopoverservice.repository;
+package com.cu2mber.stopoverservice.repository;
 
 public interface CustomStopoverRepository {
 

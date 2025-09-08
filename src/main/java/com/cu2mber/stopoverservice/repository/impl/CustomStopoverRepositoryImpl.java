@@ -1,7 +1,7 @@
-package com.oeso.stopoverservice.repository.impl;
+package com.cu2mber.stopoverservice.repository.impl;
 
-import com.oeso.stopoverservice.domain.QStopover;
-import com.oeso.stopoverservice.repository.CustomStopoverRepository;
+import com.cu2mber.stopoverservice.domain.QStopover;
+import com.cu2mber.stopoverservice.repository.CustomStopoverRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 

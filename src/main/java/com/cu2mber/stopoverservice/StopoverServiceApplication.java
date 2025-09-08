@@ -1,4 +1,4 @@
-package com.oeso.stopoverservice;
+package com.cu2mber.stopoverservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
