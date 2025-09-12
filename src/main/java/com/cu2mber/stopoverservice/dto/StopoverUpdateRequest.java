@@ -13,6 +13,8 @@ public class StopoverUpdateRequest {
     @JsonProperty("no")
     Long stopoverNo;
 
+    int localNo;
+
     @JsonProperty("name")
     String stopoverName;
 }

@@ -18,6 +18,10 @@ public class Stopover {
     @Column(name = "stopover_no")
     private Long stopoverNo;
 
+    @Column(name = "local_no", columnDefinition = "tinyint", nullable = false)
+    @Comment("지자체번호")
+    private int localNo;
+
     @Column(name = "stopover_name", length = 255, nullable = false)
     @Comment("경유지이름")
     private String stopoverName;
@@ -33,10 +37,6 @@ public class Stopover {
     @Column(name = "deleted_at", nullable = true)
     @Comment("삭제일시")
     private LocalDateTime deletedAt;
-
-    @Column(name = "local_no", columnDefinition = "tinyint", nullable = false)
-    @Comment("지자체번호")
-    private int localNo;
 
     private Stopover(int localNo, String stopoverName, int stopoverOrder, boolean stopoverDeletion, LocalDateTime deletedAt){
         this.localNo = localNo;

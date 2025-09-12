@@ -35,6 +35,7 @@ public class CustomStopoverRepositoryImpl implements CustomStopoverRepository {
                         qStopover.stopoverOrder))
                 .from(qStopover)
                 .where(qStopover.localNo.eq(localNo), qStopover.stopoverDeletion.isFalse())
+                .orderBy(qStopover.stopoverOrder.asc())
                 .fetch();
     }
 

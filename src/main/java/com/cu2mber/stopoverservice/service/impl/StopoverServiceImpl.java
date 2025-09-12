@@ -52,7 +52,11 @@ public class StopoverServiceImpl implements StopoverService {
     @Override
     public StopoverResponse update(StopoverUpdateRequest request) {
         Stopover stopover = stopoverRepository.findById(request.getStopoverNo())
-                .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND, request.getStopoverNo()));
+                .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND, request.getStopoverName()));
+
+        if(stopoverRepository.existsByLocalAndStopover(request.getLocalNo(), request.getStopoverName())) {
+            throw new StopoverException(StopoverErrorCode.STOPOVER_CONFLICT);
+        }
 
         stopover.update(request.getStopoverName());
         return getStopoverResponse(stopover);
@@ -61,7 +65,7 @@ public class StopoverServiceImpl implements StopoverService {
     @Override
     public StopoverResponse updateOrder(StopoverUpdateOrderRequest request) {
         Stopover stopover = stopoverRepository.findById(request.getStopoverNo())
-                .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND, request.getStopoverNo()));
+                .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND));
 
         stopover.updateOrder(request.getStopoverOrder());
         return getStopoverResponse(stopover);
@@ -70,16 +74,16 @@ public class StopoverServiceImpl implements StopoverService {
     @Override
     public void delete(Long stopoverNo) {
         Stopover stopover = stopoverRepository.findById(stopoverNo)
-                                                .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND, stopoverNo));
+                                                .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND));
         stopover.delete();
     }
 
     @Override
     public void deleteAll(int localNo) {
-        List<StopoverResponse> stopovers = stopoverRepository.findStopoverList(localNo);
+        List<Stopover> stopovers = stopoverRepository.findAllByLocalNo(localNo);
 
         if(!stopovers.isEmpty()) {
-            stopoverRepository.deleteAllByLocalNo(localNo);
+            stopovers.forEach(Stopover::delete);
         }
 
     }

@@ -11,6 +11,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class StopoverResponse {
 
+    @JsonProperty("no")
     Long stopoverNo;
 
     int localNo;
