@@ -1,5 +1,8 @@
 package com.cu2mber.stopoverservice.common.exception;
 
+import lombok.Getter;
+
+@Getter
 public class StopoverException extends BusinessException{
     private final StopoverErrorCode errorCode;
 
