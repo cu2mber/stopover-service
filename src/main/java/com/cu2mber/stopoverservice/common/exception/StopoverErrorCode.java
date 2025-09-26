@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum StopoverErrorCode {
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
+    STOPOVER_LIST_EMPTY(HttpStatus.BAD_REQUEST, "삭제할 경유지가 없습니다."),
     STOPOVER_CONFLICT(HttpStatus.CONFLICT, "이미 존재하는 경유지입니다."),
     STOPOVER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 경유지입니다."),
 

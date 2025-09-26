@@ -10,9 +10,6 @@ import lombok.*;
 @EqualsAndHashCode
 public class StopoverUpdateRequest {
 
-    @JsonProperty("no")
-    Long stopoverNo;
-
     int localNo;
 
     @JsonProperty("name")

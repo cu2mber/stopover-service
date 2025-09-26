@@ -11,9 +11,6 @@ import lombok.*;
 @EqualsAndHashCode
 public class StopoverUpdateOrderRequest {
 
-    @JsonProperty("no")
-    Long stopoverNo;
-
     @JsonProperty("order")
     int stopoverOrder;
 }
