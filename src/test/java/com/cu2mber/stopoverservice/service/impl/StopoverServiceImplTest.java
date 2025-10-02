@@ -111,8 +111,8 @@ class StopoverServiceImplTest {
         ReflectionTestUtils.setField(stopover, "stopoverNo", 1L);
         when(stopoverRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(stopover));
 
-        StopoverUpdateRequest request = new StopoverUpdateRequest(1L, 1, "김해대");
-        StopoverResponse response = stopoverService.update(request);
+        StopoverUpdateRequest request = new StopoverUpdateRequest(1, "김해대");
+        StopoverResponse response = stopoverService.update(1L, request);
         assertEquals(1L, response.getStopoverNo());
         assertEquals("김해대", response.getStopoverName());
 
@@ -127,8 +127,8 @@ class StopoverServiceImplTest {
         when(stopoverRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(stopover));
         when(stopoverRepository.existsByLocalAndStopover(Mockito.anyInt(), Mockito.anyString())).thenReturn(true);
 
-        StopoverUpdateRequest request = new StopoverUpdateRequest(1L, 1, "인제대");
-        assertThrows(StopoverException.class, () -> stopoverService.update(request));
+        StopoverUpdateRequest request = new StopoverUpdateRequest(1, "인제대");
+        assertThrows(StopoverException.class, () -> stopoverService.update(1L, request));
 
         verify(stopoverRepository, Mockito.times(1)).findById(Mockito.anyLong());
         verify(stopoverRepository, Mockito.times(1)).existsByLocalAndStopover(Mockito.anyInt(), Mockito.anyString());
@@ -141,8 +141,8 @@ class StopoverServiceImplTest {
         ReflectionTestUtils.setField(stopover, "stopoverNo", 1L);
         when(stopoverRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(stopover));
 
-        StopoverUpdateOrderRequest request = new StopoverUpdateOrderRequest(1L, 3);
-        StopoverResponse response = stopoverService.updateOrder(request);
+        StopoverUpdateOrderRequest request = new StopoverUpdateOrderRequest(3);
+        StopoverResponse response = stopoverService.updateOrder(1L, request);
         assertEquals(3, response.getStopoverOrder());
 
         verify(stopoverRepository, Mockito.times(1)).findById(Mockito.anyLong());
@@ -180,5 +180,16 @@ class StopoverServiceImplTest {
         assertEquals(2, responseList.size());
         assertTrue(responseList.getFirst().isStopoverDeletion());
         assertTrue(responseList.get(1).isStopoverDeletion());
+    }
+
+    @Test
+    @DisplayName("경유지 삭제(지자체) - 리스트가 빈 경우")
+    void deleteAll_empty() {
+        when(stopoverRepository.findAllByLocalNo(Mockito.anyInt())).thenReturn(List.of());
+
+        assertThrows(StopoverException.class, () -> stopoverService.deleteAll(1));
+
+        verify(stopoverRepository, Mockito.times(1)).findAllByLocalNo(Mockito.anyInt());
+
     }
 }

@@ -50,8 +50,8 @@ public class StopoverServiceImpl implements StopoverService {
     }
 
     @Override
-    public StopoverResponse update(StopoverUpdateRequest request) {
-        Stopover stopover = stopoverRepository.findById(request.getStopoverNo())
+    public StopoverResponse update(Long stopoverNo, StopoverUpdateRequest request) {
+        Stopover stopover = stopoverRepository.findById(stopoverNo)
                 .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND, request.getStopoverName()));
 
         if(stopoverRepository.existsByLocalAndStopover(request.getLocalNo(), request.getStopoverName())) {
@@ -63,8 +63,8 @@ public class StopoverServiceImpl implements StopoverService {
     }
 
     @Override
-    public StopoverResponse updateOrder(StopoverUpdateOrderRequest request) {
-        Stopover stopover = stopoverRepository.findById(request.getStopoverNo())
+    public StopoverResponse updateOrder(Long stopoverNo, StopoverUpdateOrderRequest request) {
+        Stopover stopover = stopoverRepository.findById(stopoverNo)
                 .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND));
 
         stopover.updateOrder(request.getStopoverOrder());
@@ -82,9 +82,11 @@ public class StopoverServiceImpl implements StopoverService {
     public void deleteAll(int localNo) {
         List<Stopover> stopovers = stopoverRepository.findAllByLocalNo(localNo);
 
-        if(!stopovers.isEmpty()) {
-            stopovers.forEach(Stopover::delete);
+        if(stopovers.isEmpty()) {
+           throw new StopoverException(StopoverErrorCode.STOPOVER_LIST_EMPTY);
         }
+
+        stopovers.forEach(Stopover::delete);
 
     }
 

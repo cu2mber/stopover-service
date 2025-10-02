@@ -15,9 +15,9 @@ public interface StopoverService {
 
     List<StopoverResponse> getStopoverList(int localNo);
 
-    StopoverResponse update(StopoverUpdateRequest request);
+    StopoverResponse update(Long stopoverNo, StopoverUpdateRequest request);
 
-    StopoverResponse updateOrder(StopoverUpdateOrderRequest request);
+    StopoverResponse updateOrder(Long stopoverNo, StopoverUpdateOrderRequest request);
 
     void delete(Long stopoverNo);
 
