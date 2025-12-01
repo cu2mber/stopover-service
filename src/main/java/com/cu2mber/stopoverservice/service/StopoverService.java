@@ -1,15 +1,16 @@
 package com.cu2mber.stopoverservice.service;
 
-import com.cu2mber.stopoverservice.dto.StopoverRequest;
-import com.cu2mber.stopoverservice.dto.StopoverResponse;
-import com.cu2mber.stopoverservice.dto.StopoverUpdateOrderRequest;
-import com.cu2mber.stopoverservice.dto.StopoverUpdateRequest;
+import com.cu2mber.stopoverservice.dto.command.StopoverCreateCommand;
+import com.cu2mber.stopoverservice.dto.request.StopoverCreateRequest;
+import com.cu2mber.stopoverservice.dto.response.StopoverResponse;
+import com.cu2mber.stopoverservice.dto.request.StopoverUpdateOrderRequest;
+import com.cu2mber.stopoverservice.dto.request.StopoverUpdateRequest;
 
 import java.util.List;
 
 public interface StopoverService {
 
-    StopoverResponse create(StopoverRequest request);
+    StopoverResponse create(StopoverCreateCommand command);
 
     StopoverResponse getStopover(Long stopoverNo);
 

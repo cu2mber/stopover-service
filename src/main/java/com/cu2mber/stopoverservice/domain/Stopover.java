@@ -26,9 +26,9 @@ public class Stopover {
     @Comment("경유지이름")
     private String stopoverName;
 
-    @Column(name = "stopover_order", columnDefinition = "tinyint", nullable = false)
+    @Column(name = "stopover_sequence", columnDefinition = "tinyint", nullable = false)
     @Comment("순서")
-    private int stopoverOrder;
+    private Integer stopoverSequence;
 
     @Column(name = "stopover_deletion", columnDefinition = "tinyint", nullable = true)
     @Comment("삭제여부")
@@ -38,16 +38,16 @@ public class Stopover {
     @Comment("삭제일시")
     private LocalDateTime deletedAt;
 
-    private Stopover(int localNo, String stopoverName, int stopoverOrder, boolean stopoverDeletion, LocalDateTime deletedAt){
+    private Stopover(int localNo, String stopoverName, int stopoverSequence, boolean stopoverDeletion, LocalDateTime deletedAt){
         this.localNo = localNo;
         this.stopoverName = stopoverName;
-        this.stopoverOrder = stopoverOrder;
+        this.stopoverSequence = stopoverSequence;
         this.stopoverDeletion = stopoverDeletion;
         this.deletedAt = deletedAt;
     }
 
-    public static Stopover ofNewStopover(int localNo, String stopoverName, int stopoverOrder){
-        return new Stopover(localNo, stopoverName, stopoverOrder, false, null);
+    public static Stopover ofNewStopover(int localNo, String stopoverName, int sequence){
+        return new Stopover(localNo, stopoverName, sequence, false, null);
     }
 
     public void update(String stopoverName) {
@@ -55,7 +55,7 @@ public class Stopover {
     }
 
     public void updateOrder(int stopoverOrder){
-        this.stopoverOrder = stopoverOrder;
+        this.stopoverSequence = stopoverOrder;
     }
 
     public void delete(){

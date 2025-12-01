@@ -1,9 +1,10 @@
 package com.cu2mber.stopoverservice.controller;
 
-import com.cu2mber.stopoverservice.dto.StopoverRequest;
-import com.cu2mber.stopoverservice.dto.StopoverResponse;
-import com.cu2mber.stopoverservice.dto.StopoverUpdateOrderRequest;
-import com.cu2mber.stopoverservice.dto.StopoverUpdateRequest;
+import com.cu2mber.stopoverservice.dto.command.StopoverCreateCommand;
+import com.cu2mber.stopoverservice.dto.request.StopoverCreateRequest;
+import com.cu2mber.stopoverservice.dto.response.StopoverResponse;
+import com.cu2mber.stopoverservice.dto.request.StopoverUpdateOrderRequest;
+import com.cu2mber.stopoverservice.dto.request.StopoverUpdateRequest;
 import com.cu2mber.stopoverservice.service.StopoverService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +22,14 @@ public class StopoverController {
     private final StopoverService stopoverService;
 
     @PostMapping
-    public ResponseEntity<StopoverResponse> saveStopover(@Valid @RequestBody StopoverRequest request) {
+    public ResponseEntity<StopoverResponse> createStopover(@Valid @RequestBody StopoverCreateRequest request) {
 
-        StopoverResponse response = stopoverService.create(request);
+        StopoverCreateCommand command = new StopoverCreateCommand(
+                1L, // todo: 생성자 ID
+                request.localNo(),
+                request.stopoverName()
+        );
+        StopoverResponse response = stopoverService.create(command);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

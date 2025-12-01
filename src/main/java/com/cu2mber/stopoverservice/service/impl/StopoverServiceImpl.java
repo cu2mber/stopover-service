@@ -2,10 +2,10 @@ package com.cu2mber.stopoverservice.service.impl;
 
 import com.cu2mber.stopoverservice.common.exception.StopoverErrorCode;
 import com.cu2mber.stopoverservice.common.exception.StopoverException;
-import com.cu2mber.stopoverservice.dto.StopoverRequest;
-import com.cu2mber.stopoverservice.dto.StopoverResponse;
-import com.cu2mber.stopoverservice.dto.StopoverUpdateOrderRequest;
-import com.cu2mber.stopoverservice.dto.StopoverUpdateRequest;
+import com.cu2mber.stopoverservice.dto.command.StopoverCreateCommand;
+import com.cu2mber.stopoverservice.dto.response.StopoverResponse;
+import com.cu2mber.stopoverservice.dto.request.StopoverUpdateOrderRequest;
+import com.cu2mber.stopoverservice.dto.request.StopoverUpdateRequest;
 import com.cu2mber.stopoverservice.repository.StopoverRepository;
 import com.cu2mber.stopoverservice.service.StopoverService;
 import com.cu2mber.stopoverservice.domain.Stopover;
@@ -22,11 +22,13 @@ public class StopoverServiceImpl implements StopoverService {
     private final StopoverRepository stopoverRepository;
 
     @Override
-    public StopoverResponse create(StopoverRequest request) {
+    public StopoverResponse create(StopoverCreateCommand command) {
 
-        existStopover(request.getLocalNo(), request.getStopoverName());
+        existStopover(command.localNo(), command.stopoverName());
+        int nextSequence = stopoverRepository.findMaxSequenceByLocalNo(command.localNo())
+                .orElse(0) + 1;
 
-        Stopover stopover = Stopover.ofNewStopover(request.getLocalNo(), request.getStopoverName(), request.getStopoverOrder());
+        Stopover stopover = Stopover.ofNewStopover(command.localNo(), command.stopoverName(), nextSequence);
         stopoverRepository.save(stopover);
 
         return getStopoverResponse(stopover);
@@ -63,7 +65,7 @@ public class StopoverServiceImpl implements StopoverService {
         Stopover stopover = stopoverRepository.findById(stopoverNo)
                 .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND));
 
-        stopover.updateOrder(request.getStopoverOrder());
+        stopover.updateOrder(request.stopoverSequence());
         return getStopoverResponse(stopover);
     }
 
@@ -87,7 +89,7 @@ public class StopoverServiceImpl implements StopoverService {
     }
 
     private StopoverResponse getStopoverResponse(Stopover stopover) {
-        return new StopoverResponse(stopover.getStopoverNo(), stopover.getLocalNo(), stopover.getStopoverName(), stopover.getStopoverOrder());
+        return new StopoverResponse(stopover.getStopoverNo(), stopover.getLocalNo(), stopover.getStopoverName(), stopover.getStopoverSequence());
     }
 
     private void existStopover(int localNo, String stopoverName) {

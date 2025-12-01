@@ -2,10 +2,10 @@ package com.cu2mber.stopoverservice.service.impl;
 
 import com.cu2mber.stopoverservice.common.exception.StopoverException;
 import com.cu2mber.stopoverservice.domain.Stopover;
-import com.cu2mber.stopoverservice.dto.StopoverRequest;
-import com.cu2mber.stopoverservice.dto.StopoverResponse;
-import com.cu2mber.stopoverservice.dto.StopoverUpdateOrderRequest;
-import com.cu2mber.stopoverservice.dto.StopoverUpdateRequest;
+import com.cu2mber.stopoverservice.dto.command.StopoverCreateCommand;
+import com.cu2mber.stopoverservice.dto.response.StopoverResponse;
+import com.cu2mber.stopoverservice.dto.request.StopoverUpdateOrderRequest;
+import com.cu2mber.stopoverservice.dto.request.StopoverUpdateRequest;
 import com.cu2mber.stopoverservice.repository.StopoverRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,8 +47,8 @@ class StopoverServiceImplTest {
 
         when(stopoverRepository.save(Mockito.any(Stopover.class))).thenReturn(stopover);
 
-        StopoverRequest request = new StopoverRequest(1, "김해시청", 1);
-        stopoverService.create(request);
+        StopoverCreateCommand command = new StopoverCreateCommand(1L, 1, "김해시청");
+        stopoverService.create(command);
 
         Mockito.verify(stopoverRepository, Mockito.times(1)).save(Mockito.any(Stopover.class));
     }
@@ -58,8 +58,8 @@ class StopoverServiceImplTest {
     void create_fail() {
         when(stopoverRepository.existsByLocalAndStopover(Mockito.anyInt(), Mockito.anyString())).thenReturn(true);
 
-        StopoverRequest request = new StopoverRequest(1, "김해시청", 1);
-        assertThrows(StopoverException.class, () -> stopoverService.create(request));
+        StopoverCreateCommand command = new StopoverCreateCommand(1L, 1, "김해시청");
+        assertThrows(StopoverException.class, () -> stopoverService.create(command));
 
         Mockito.verify(stopoverRepository, Mockito.never()).save(Mockito.any(Stopover.class));
     }

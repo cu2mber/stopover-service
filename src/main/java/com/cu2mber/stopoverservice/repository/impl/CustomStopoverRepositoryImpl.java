@@ -1,13 +1,14 @@
 package com.cu2mber.stopoverservice.repository.impl;
 
 import com.cu2mber.stopoverservice.domain.QStopover;
-import com.cu2mber.stopoverservice.dto.QStopoverResponse;
-import com.cu2mber.stopoverservice.dto.StopoverResponse;
+import com.cu2mber.stopoverservice.dto.response.QStopoverResponse;
+import com.cu2mber.stopoverservice.dto.response.StopoverResponse;
 import com.cu2mber.stopoverservice.repository.CustomStopoverRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class CustomStopoverRepositoryImpl implements CustomStopoverRepository {
@@ -37,6 +38,15 @@ public class CustomStopoverRepositoryImpl implements CustomStopoverRepository {
                 .where(qStopover.localNo.eq(localNo), qStopover.stopoverDeletion.isFalse())
                 .orderBy(qStopover.stopoverOrder.asc())
                 .fetch();
+    }
+
+    @Override
+    public Optional<Integer> findMaxSequenceByLocalNo(int localNo) {
+        return Optional.ofNullable(queryFactory
+                .select(qStopover.stopoverSequence.max())
+                .from(qStopover)
+                .where(qStopover.localNo.eq(localNo))
+                .fetchOne());
     }
 
 
