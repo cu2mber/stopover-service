@@ -1,4 +1,4 @@
-package com.cu2mber.stopoverservice.dto;
+package com.cu2mber.stopoverservice.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.querydsl.core.annotations.QueryProjection;

@@ -2,7 +2,7 @@ package com.cu2mber.stopoverservice.repository;
 
 import com.cu2mber.stopoverservice.common.config.CommonConfig;
 import com.cu2mber.stopoverservice.domain.Stopover;
-import com.cu2mber.stopoverservice.dto.StopoverResponse;
+import com.cu2mber.stopoverservice.dto.response.StopoverResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
