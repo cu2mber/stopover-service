@@ -18,9 +18,9 @@ public class Stopover {
     @Column(name = "stopover_no")
     private Long stopoverNo;
 
-    @Column(name = "local_no", columnDefinition = "tinyint", nullable = false)
-    @Comment("지자체번호")
-    private int localNo;
+    @Column(name = "member_local_no", columnDefinition = "bigint", nullable = false)
+    @Comment("지자체 멤버 번호")
+    private Long memberLocalNo;
 
     @Column(name = "stopover_name", length = 255, nullable = false)
     @Comment("경유지이름")
@@ -38,16 +38,16 @@ public class Stopover {
     @Comment("삭제일시")
     private LocalDateTime deletedAt;
 
-    private Stopover(int localNo, String stopoverName, int stopoverSequence, boolean stopoverDeletion, LocalDateTime deletedAt){
-        this.localNo = localNo;
+    private Stopover(Long memberLocalNo, String stopoverName, int stopoverSequence, boolean stopoverDeletion, LocalDateTime deletedAt){
+        this.memberLocalNo = memberLocalNo;
         this.stopoverName = stopoverName;
         this.stopoverSequence = stopoverSequence;
         this.stopoverDeletion = stopoverDeletion;
         this.deletedAt = deletedAt;
     }
 
-    public static Stopover ofNewStopover(int localNo, String stopoverName, int sequence){
-        return new Stopover(localNo, stopoverName, sequence, false, null);
+    public static Stopover ofNewStopover(Long memberLocalNo, String stopoverName, int sequence){
+        return new Stopover(memberLocalNo, stopoverName, sequence, false, null);
     }
 
     public void update(String stopoverName) {

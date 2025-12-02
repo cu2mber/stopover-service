@@ -33,8 +33,8 @@ class StopoverRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        stopover = Stopover.ofNewStopover(1, "김해시청", 2);
-        stopover2 = Stopover.ofNewStopover(1, "인제대", 1);
+        stopover = Stopover.ofNewStopover(1L, "김해시청", 2);
+        stopover2 = Stopover.ofNewStopover(1L, "인제대", 1);
 
         entityManager.persist(stopover);
         entityManager.persist(stopover2);
@@ -44,14 +44,14 @@ class StopoverRepositoryTest {
     @Test
     @DisplayName("지자체에서 입력한 경유지가 있는 경우")
     void existsByLocalAndStopover_true() {
-        boolean exist = stopoverRepository.existsByLocalAndStopover(1, "김해시청");
+        boolean exist = stopoverRepository.existsByLocalAndStopover(1L, "김해시청");
         assertTrue(exist);
     }
 
     @Test
     @DisplayName("지자체에서 입력한 경유지가 없는 경우")
     void existsByLocalAndStopover_false() {
-        boolean exist = stopoverRepository.existsByLocalAndStopover(1, "장유터미널");
+        boolean exist = stopoverRepository.existsByLocalAndStopover(1L, "장유터미널");
         assertFalse(exist);
     }
 
@@ -59,7 +59,7 @@ class StopoverRepositoryTest {
     @DisplayName("경유지 리스트 찾기 - QueryDSL")
     void findStopoverList() {
 
-        List<StopoverResponse> responses = stopoverRepository.findStopoverList(1);
+        List<StopoverResponse> responses = stopoverRepository.findStopoverList(1L);
 
         assertFalse(responses.isEmpty());
 
@@ -74,9 +74,9 @@ class StopoverRepositoryTest {
 
     @Test
     @DisplayName("경유지 리스트 찾기 - JPA")
-    void findAllByLocalNo() {
+    void findAllByMemberLocalNoNo() {
 
-        List<Stopover> responses = stopoverRepository.findAllByLocalNo(1);
+        List<Stopover> responses = stopoverRepository.findAllByMemberLocalNo(1L);
 
         assertFalse(responses.isEmpty());
 

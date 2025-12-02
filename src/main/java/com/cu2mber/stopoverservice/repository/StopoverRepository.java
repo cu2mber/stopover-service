@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface StopoverRepository extends JpaRepository<Stopover, Long>, CustomStopoverRepository {
 
-    List<Stopover> findAllByLocalNo(int localNo);
+    List<Stopover> findAllByMemberLocalNo(Long memberLocalNo);
 }

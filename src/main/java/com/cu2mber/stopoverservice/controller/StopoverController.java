@@ -24,9 +24,9 @@ public class StopoverController {
     @PostMapping
     public ResponseEntity<StopoverResponse> createStopover(@Valid @RequestBody StopoverCreateRequest request) {
 
+        // 생성자 ID로 지자체 멤버 서비스 조회
         StopoverCreateCommand command = new StopoverCreateCommand(
-                1L, // todo: 생성자 ID
-                request.localNo(),
+                1L, // todo: 지자체 멤버 ID
                 request.stopoverName()
         );
         StopoverResponse response = stopoverService.create(command);
@@ -42,8 +42,8 @@ public class StopoverController {
     }
 
     @GetMapping("/locals/{localNo}")
-    public ResponseEntity<List<StopoverResponse>> getStopovers(@PathVariable("localNo") int localNo) {
-        List<StopoverResponse> responseList = stopoverService.getStopoverList(localNo);
+    public ResponseEntity<List<StopoverResponse>> getStopovers(@PathVariable("localNo") Long memberLocalNo) {
+        List<StopoverResponse> responseList = stopoverService.getStopoverList(memberLocalNo);
 
         return ResponseEntity.ok(responseList);
     }
@@ -71,8 +71,8 @@ public class StopoverController {
     }
 
     @DeleteMapping("/locals/{localNo}")
-    public ResponseEntity<Void> deleteStopovers(@PathVariable("localNo") int localNo) {
-        stopoverService.deleteAll(localNo);
+    public ResponseEntity<Void> deleteStopovers(@PathVariable("localNo") Long memberLocalNo) {
+        stopoverService.deleteAll(memberLocalNo);
 
         return ResponseEntity.ok().build();
     }

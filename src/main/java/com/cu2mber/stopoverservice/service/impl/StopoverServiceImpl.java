@@ -24,11 +24,11 @@ public class StopoverServiceImpl implements StopoverService {
     @Override
     public StopoverResponse create(StopoverCreateCommand command) {
 
-        existStopover(command.localNo(), command.stopoverName());
-        int nextSequence = stopoverRepository.findMaxSequenceByLocalNo(command.localNo())
+        existStopover(command.memberLocalNo(), command.stopoverName());
+        int nextSequence = stopoverRepository.findMaxSequenceByLocalNo(command.memberLocalNo())
                 .orElse(0) + 1;
 
-        Stopover stopover = Stopover.ofNewStopover(command.localNo(), command.stopoverName(), nextSequence);
+        Stopover stopover = Stopover.ofNewStopover(command.memberLocalNo(), command.stopoverName(), nextSequence);
         stopoverRepository.save(stopover);
 
         return getStopoverResponse(stopover);
@@ -45,19 +45,21 @@ public class StopoverServiceImpl implements StopoverService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<StopoverResponse> getStopoverList(int localNo) {
-        return stopoverRepository.findStopoverList(localNo);
+    public List<StopoverResponse> getStopoverList(Long memberLocalNo) {
+        return stopoverRepository.findStopoverList(memberLocalNo);
     }
 
     @Override
     public StopoverResponse update(Long stopoverNo, StopoverUpdateRequest request) {
-        Stopover stopover = stopoverRepository.findById(stopoverNo)
-                .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND, request.getStopoverName()));
+//        Stopover stopover = stopoverRepository.findById(stopoverNo)
+//                .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND, request.getStopoverName()));
 
-        existStopover(request.getLocalNo(), request.getStopoverName());
+//        existStopover(request.getLocalNo(), request.getStopoverName());
+//
+//        stopover.update(request.getStopoverName());
+//        return getStopoverResponse(stopover);
 
-        stopover.update(request.getStopoverName());
-        return getStopoverResponse(stopover);
+        return null;
     }
 
     @Override
@@ -77,8 +79,8 @@ public class StopoverServiceImpl implements StopoverService {
     }
 
     @Override
-    public void deleteAll(int localNo) {
-        List<Stopover> stopovers = stopoverRepository.findAllByLocalNo(localNo);
+    public void deleteAll(Long memberLocalNo) {
+        List<Stopover> stopovers = stopoverRepository.findAllByMemberLocalNo(memberLocalNo);
 
         if(stopovers.isEmpty()) {
             throw new StopoverException(StopoverErrorCode.STOPOVER_LIST_EMPTY);
@@ -89,11 +91,11 @@ public class StopoverServiceImpl implements StopoverService {
     }
 
     private StopoverResponse getStopoverResponse(Stopover stopover) {
-        return new StopoverResponse(stopover.getStopoverNo(), stopover.getLocalNo(), stopover.getStopoverName(), stopover.getStopoverSequence());
+        return new StopoverResponse(stopover.getStopoverNo(), stopover.getMemberLocalNo(), stopover.getStopoverName(), stopover.getStopoverSequence());
     }
 
-    private void existStopover(int localNo, String stopoverName) {
-        if(stopoverRepository.existsByLocalAndStopover(localNo, stopoverName)) {
+    private void existStopover(Long memberLocalNo, String stopoverName) {
+        if(stopoverRepository.existsByLocalAndStopover(memberLocalNo, stopoverName)) {
             throw new StopoverException(StopoverErrorCode.STOPOVER_CONFLICT);
         }
     }

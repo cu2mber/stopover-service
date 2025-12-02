@@ -14,7 +14,7 @@ public class StopoverResponse {
     @JsonProperty("no")
     Long stopoverNo;
 
-    int localNo;
+    Long memberLocalNo;
 
 //    String localName;
 
@@ -25,9 +25,9 @@ public class StopoverResponse {
     int stopoverOrder;
 
     @QueryProjection
-    public StopoverResponse(Long stopoverNo, int localNo, String stopoverName, int stopoverOrder) {
+    public StopoverResponse(Long stopoverNo, Long memberLocalNo, String stopoverName, int stopoverOrder) {
         this.stopoverNo = stopoverNo;
-        this.localNo = localNo;
+        this.memberLocalNo = memberLocalNo;
         this.stopoverName = stopoverName;
         this.stopoverOrder = stopoverOrder;
     }

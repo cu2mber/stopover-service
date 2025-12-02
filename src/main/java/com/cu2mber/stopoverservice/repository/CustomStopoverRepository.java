@@ -7,10 +7,10 @@ import java.util.Optional;
 
 public interface CustomStopoverRepository {
 
-    boolean existsByLocalAndStopover(int localNo, String stopoverName);
+    boolean existsByLocalAndStopover(Long memberLocalNo, String stopoverName);
 
-    List<StopoverResponse> findStopoverList(int localNo);
+    List<StopoverResponse> findStopoverList(Long memberLocalNo);
 
-    Optional<Integer> findMaxSequenceByLocalNo(int localNo);
+    Optional<Integer> findMaxSequenceByLocalNo(Long memberLocalNo);
 
 }

@@ -18,34 +18,34 @@ public class CustomStopoverRepositoryImpl implements CustomStopoverRepository {
 
 
     @Override
-    public boolean existsByLocalAndStopover(int localNo, String stopoverName) {
+    public boolean existsByLocalAndStopover(Long memberLocalNo, String stopoverName) {
         Long exist = queryFactory.select(qStopover.count())
                     .from(qStopover)
-                    .where(qStopover.localNo.eq(localNo), qStopover.stopoverName.eq(stopoverName))
+                    .where(qStopover.memberLocalNo.eq(memberLocalNo), qStopover.stopoverName.eq(stopoverName))
                     .fetchOne();
 
         return exist != null && exist > 0;
     }
 
     @Override
-    public List<StopoverResponse> findStopoverList(int localNo) {
+    public List<StopoverResponse> findStopoverList(Long memberLocalNo) {
         return queryFactory.select(new QStopoverResponse(
                         qStopover.stopoverNo,
-                        qStopover.localNo,
+                        qStopover.memberLocalNo,
                         qStopover.stopoverName,
-                        qStopover.stopoverOrder))
+                        qStopover.stopoverSequence))
                 .from(qStopover)
-                .where(qStopover.localNo.eq(localNo), qStopover.stopoverDeletion.isFalse())
-                .orderBy(qStopover.stopoverOrder.asc())
+                .where(qStopover.memberLocalNo.eq(memberLocalNo), qStopover.stopoverDeletion.isFalse())
+                .orderBy(qStopover.stopoverSequence.asc())
                 .fetch();
     }
 
     @Override
-    public Optional<Integer> findMaxSequenceByLocalNo(int localNo) {
+    public Optional<Integer> findMaxSequenceByLocalNo(Long memberLocalNo) {
         return Optional.ofNullable(queryFactory
                 .select(qStopover.stopoverSequence.max())
                 .from(qStopover)
-                .where(qStopover.localNo.eq(localNo))
+                .where(qStopover.memberLocalNo.eq(memberLocalNo))
                 .fetchOne());
     }
 
