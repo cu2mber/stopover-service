@@ -26,6 +26,9 @@ public class Stopover {
     @Comment("경유지이름")
     private String stopoverName;
 
+    @Column(name = "stopover_name_normalized", length = 255,nullable = false)
+    private String stopoverNameNormalized;
+
     @Column(name = "stopover_sequence", columnDefinition = "tinyint", nullable = false)
     @Comment("순서")
     private Integer stopoverSequence;
@@ -48,6 +51,10 @@ public class Stopover {
 
     public static Stopover ofNewStopover(Long memberLocalNo, String stopoverName, int sequence){
         return new Stopover(memberLocalNo, stopoverName, sequence, false, null);
+    }
+
+    public void normalizeName() {
+        this.stopoverNameNormalized = this.stopoverName.replaceAll("\\s+", "").trim();
     }
 
     public void update(String stopoverName) {
