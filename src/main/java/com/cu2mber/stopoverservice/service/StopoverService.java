@@ -1,6 +1,7 @@
 package com.cu2mber.stopoverservice.service;
 
 import com.cu2mber.stopoverservice.dto.command.StopoverCreateCommand;
+import com.cu2mber.stopoverservice.dto.command.StopoverUpdateCommand;
 import com.cu2mber.stopoverservice.dto.request.StopoverCreateRequest;
 import com.cu2mber.stopoverservice.dto.response.StopoverResponse;
 import com.cu2mber.stopoverservice.dto.request.StopoverUpdateOrderRequest;
@@ -16,7 +17,7 @@ public interface StopoverService {
 
     List<StopoverResponse> getStopoverList(Long memberLocalNo);
 
-    StopoverResponse update(Long stopoverNo, StopoverUpdateRequest request);
+    StopoverResponse update(StopoverUpdateCommand command);
 
     StopoverResponse updateOrder(Long stopoverNo, StopoverUpdateOrderRequest request);
 

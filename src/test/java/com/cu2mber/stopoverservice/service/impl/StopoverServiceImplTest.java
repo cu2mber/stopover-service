@@ -3,9 +3,9 @@ package com.cu2mber.stopoverservice.service.impl;
 import com.cu2mber.stopoverservice.common.exception.StopoverException;
 import com.cu2mber.stopoverservice.domain.Stopover;
 import com.cu2mber.stopoverservice.dto.command.StopoverCreateCommand;
+import com.cu2mber.stopoverservice.dto.command.StopoverUpdateCommand;
 import com.cu2mber.stopoverservice.dto.response.StopoverResponse;
 import com.cu2mber.stopoverservice.dto.request.StopoverUpdateOrderRequest;
-import com.cu2mber.stopoverservice.dto.request.StopoverUpdateRequest;
 import com.cu2mber.stopoverservice.repository.StopoverRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -111,8 +111,8 @@ class StopoverServiceImplTest {
         ReflectionTestUtils.setField(stopover, "stopoverNo", 1L);
         when(stopoverRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(stopover));
 
-        StopoverUpdateRequest request = new StopoverUpdateRequest(1, "김해대");
-        StopoverResponse response = stopoverService.update(1L, request);
+        StopoverUpdateCommand command = new StopoverUpdateCommand(1L, 1L, "김해대");
+        StopoverResponse response = stopoverService.update(command);
         assertEquals(1L, response.getStopoverNo());
         assertEquals("김해대", response.getStopoverName());
 
@@ -127,8 +127,8 @@ class StopoverServiceImplTest {
         when(stopoverRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(stopover));
         when(stopoverRepository.existsByLocalAndStopover(Mockito.anyLong(), Mockito.anyString())).thenReturn(true);
 
-        StopoverUpdateRequest request = new StopoverUpdateRequest(1, "인제대");
-        assertThrows(StopoverException.class, () -> stopoverService.update(1L, request));
+        StopoverUpdateCommand command = new StopoverUpdateCommand(1L, 1L, "인제대");
+        assertThrows(StopoverException.class, () -> stopoverService.update(command));
 
         verify(stopoverRepository, Mockito.times(1)).findById(Mockito.anyLong());
         verify(stopoverRepository, Mockito.times(1)).existsByLocalAndStopover(Mockito.anyLong(), Mockito.anyString());

@@ -3,9 +3,9 @@ package com.cu2mber.stopoverservice.service.impl;
 import com.cu2mber.stopoverservice.common.exception.StopoverErrorCode;
 import com.cu2mber.stopoverservice.common.exception.StopoverException;
 import com.cu2mber.stopoverservice.dto.command.StopoverCreateCommand;
+import com.cu2mber.stopoverservice.dto.command.StopoverUpdateCommand;
 import com.cu2mber.stopoverservice.dto.response.StopoverResponse;
 import com.cu2mber.stopoverservice.dto.request.StopoverUpdateOrderRequest;
-import com.cu2mber.stopoverservice.dto.request.StopoverUpdateRequest;
 import com.cu2mber.stopoverservice.repository.StopoverRepository;
 import com.cu2mber.stopoverservice.service.StopoverService;
 import com.cu2mber.stopoverservice.domain.Stopover;
@@ -29,6 +29,7 @@ public class StopoverServiceImpl implements StopoverService {
                 .orElse(0) + 1;
 
         Stopover stopover = Stopover.ofNewStopover(command.memberLocalNo(), command.stopoverName(), nextSequence);
+        stopover.normalizeName();
         stopoverRepository.save(stopover);
 
         return getStopoverResponse(stopover);
@@ -50,16 +51,14 @@ public class StopoverServiceImpl implements StopoverService {
     }
 
     @Override
-    public StopoverResponse update(Long stopoverNo, StopoverUpdateRequest request) {
-//        Stopover stopover = stopoverRepository.findById(stopoverNo)
-//                .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND, request.getStopoverName()));
+    public StopoverResponse update(StopoverUpdateCommand command) {
+        Stopover stopover = stopoverRepository.findById(command.stopoverNo())
+                .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND, command.stopoverName()));
 
-//        existStopover(request.getLocalNo(), request.getStopoverName());
-//
-//        stopover.update(request.getStopoverName());
-//        return getStopoverResponse(stopover);
+        existStopover(command.memberLocalNo(), command.stopoverName());
 
-        return null;
+        stopover.update(command.stopoverName());
+        return getStopoverResponse(stopover);
     }
 
     @Override
