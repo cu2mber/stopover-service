@@ -33,17 +33,33 @@ class StopoverRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        stopover = Stopover.ofNewStopover(1L, "김해시청", 2);
+        stopover = Stopover.ofNewStopover(1L, "김해 시청", 2);
         stopover2 = Stopover.ofNewStopover(1L, "인제대", 1);
+
+        stopover.normalizeName();
+        stopover2.normalizeName();
 
         entityManager.persist(stopover);
         entityManager.persist(stopover2);
         entityManager.flush();
     }
+    @Test
+    @DisplayName("지자체에서 입력한 경유지가 있는 경우 - 같은 이름")
+    void existsByLocalAndStopover_true() {
+        boolean exist = stopoverRepository.existsByLocalAndStopover(1L, "김해 시청");
+        assertTrue(exist);
+    }
 
     @Test
-    @DisplayName("지자체에서 입력한 경유지가 있는 경우")
-    void existsByLocalAndStopover_true() {
+    @DisplayName("지자체에서 입력한 경유지가 있는 경우 - 다른 공백")
+    void existsByLocalAndStopover_true_normalized() {
+        boolean exist = stopoverRepository.existsByLocalAndStopover(1L, "김해시 청");
+        assertTrue(exist);
+    }
+
+    @Test
+    @DisplayName("지자체에서 입력한 경유지가 있는 경우 - 공백X")
+    void existsByLocalAndStopover_true_no_whitespace() {
         boolean exist = stopoverRepository.existsByLocalAndStopover(1L, "김해시청");
         assertTrue(exist);
     }
@@ -67,7 +83,7 @@ class StopoverRepositoryTest {
                 () -> {
                     assertEquals(2, responses.size());
                     assertEquals("인제대", responses.getFirst().getStopoverName());
-                    assertEquals("김해시청", responses.get(1).getStopoverName());
+                    assertEquals("김해 시청", responses.get(1).getStopoverName());
                 }
         );
     }
@@ -83,7 +99,7 @@ class StopoverRepositoryTest {
         assertAll(
                 () -> {
                     assertEquals(2, responses.size());
-                    assertEquals("김해시청", responses.getFirst().getStopoverName());
+                    assertEquals("김해 시청", responses.getFirst().getStopoverName());
                     assertEquals("인제대", responses.get(1).getStopoverName());
                 }
         );

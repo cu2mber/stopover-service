@@ -19,9 +19,14 @@ public class CustomStopoverRepositoryImpl implements CustomStopoverRepository {
 
     @Override
     public boolean existsByLocalAndStopover(Long memberLocalNo, String stopoverName) {
+        String normalized  = stopoverName.replaceAll("\\s+", "").trim();
+
         Long exist = queryFactory.select(qStopover.count())
                     .from(qStopover)
-                    .where(qStopover.memberLocalNo.eq(memberLocalNo), qStopover.stopoverName.eq(stopoverName))
+                    .where(
+                            qStopover.memberLocalNo.eq(memberLocalNo),
+                            qStopover.stopoverNameNormalized.eq(normalized)
+                    )
                     .fetchOne();
 
         return exist != null && exist > 0;
