@@ -2,6 +2,7 @@ package com.cu2mber.stopoverservice.service;
 
 import com.cu2mber.stopoverservice.dto.command.StopoverCreateCommand;
 import com.cu2mber.stopoverservice.dto.command.StopoverUpdateCommand;
+import com.cu2mber.stopoverservice.dto.command.StopoverUpdateOrderCommand;
 import com.cu2mber.stopoverservice.dto.request.StopoverCreateRequest;
 import com.cu2mber.stopoverservice.dto.response.StopoverResponse;
 import com.cu2mber.stopoverservice.dto.request.StopoverUpdateOrderRequest;
@@ -19,7 +20,7 @@ public interface StopoverService {
 
     StopoverResponse update(StopoverUpdateCommand command);
 
-    StopoverResponse updateOrder(Long stopoverNo, StopoverUpdateOrderRequest request);
+    void updateOrder(StopoverUpdateOrderCommand command);
 
     void delete(Long stopoverNo);
 

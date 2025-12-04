@@ -4,6 +4,7 @@ import com.cu2mber.stopoverservice.common.exception.StopoverException;
 import com.cu2mber.stopoverservice.domain.Stopover;
 import com.cu2mber.stopoverservice.dto.command.StopoverCreateCommand;
 import com.cu2mber.stopoverservice.dto.command.StopoverUpdateCommand;
+import com.cu2mber.stopoverservice.dto.command.StopoverUpdateOrderCommand;
 import com.cu2mber.stopoverservice.dto.response.StopoverResponse;
 import com.cu2mber.stopoverservice.dto.request.StopoverUpdateOrderRequest;
 import com.cu2mber.stopoverservice.repository.StopoverRepository;
@@ -141,9 +142,9 @@ class StopoverServiceImplTest {
         ReflectionTestUtils.setField(stopover, "stopoverNo", 1L);
         when(stopoverRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(stopover));
 
-        StopoverUpdateOrderRequest request = new StopoverUpdateOrderRequest(3);
-        StopoverResponse response = stopoverService.updateOrder(1L, request);
-        assertEquals(3, response.getStopoverOrder());
+        StopoverUpdateOrderCommand.UpdateOrderInfo orderInfo = new StopoverUpdateOrderCommand.UpdateOrderInfo(1L, 3);
+        StopoverUpdateOrderCommand command = new StopoverUpdateOrderCommand(1L, List.of(orderInfo));
+        stopoverService.updateOrder(command);
 
         verify(stopoverRepository, Mockito.times(1)).findById(Mockito.anyLong());
     }

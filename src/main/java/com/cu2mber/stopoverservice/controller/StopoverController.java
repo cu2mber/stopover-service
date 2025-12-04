@@ -1,6 +1,8 @@
 package com.cu2mber.stopoverservice.controller;
 
 import com.cu2mber.stopoverservice.dto.command.StopoverCreateCommand;
+import com.cu2mber.stopoverservice.dto.command.StopoverUpdateCommand;
+import com.cu2mber.stopoverservice.dto.command.StopoverUpdateOrderCommand;
 import com.cu2mber.stopoverservice.dto.request.StopoverCreateRequest;
 import com.cu2mber.stopoverservice.dto.response.StopoverResponse;
 import com.cu2mber.stopoverservice.dto.request.StopoverUpdateOrderRequest;
@@ -41,25 +43,43 @@ public class StopoverController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/locals/{localNo}")
-    public ResponseEntity<List<StopoverResponse>> getStopovers(@PathVariable("localNo") Long memberLocalNo) {
-        List<StopoverResponse> responseList = stopoverService.getStopoverList(memberLocalNo);
+    // 지자체용
+    @GetMapping
+    public ResponseEntity<List<StopoverResponse>> getStopoversForLocal() {
+        // todo: 지자체 멤버 ID
+        List<StopoverResponse> responseList = stopoverService.getStopoverList(1L);
 
         return ResponseEntity.ok(responseList);
     }
 
     @PutMapping("/{no}")
     public ResponseEntity<StopoverResponse> updateStopover(@PathVariable("no") Long no, @Valid @RequestBody StopoverUpdateRequest request) {
-        StopoverResponse response =  stopoverService.update(no, request);
+
+        StopoverUpdateCommand command = new StopoverUpdateCommand(
+                no,
+                1L, // todo: 지자체 멤버 ID
+                request.stopoverName()
+        );
+
+        StopoverResponse response =  stopoverService.update(command);
 
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{no}/order")
-    public ResponseEntity<StopoverResponse> updateOrder(@PathVariable("no") Long no, @Valid @RequestBody StopoverUpdateOrderRequest request) {
-        StopoverResponse response = stopoverService.updateOrder(no, request);
+    @PutMapping("/order")
+    public ResponseEntity<StopoverResponse> updateOrder(@Valid @RequestBody List<StopoverUpdateOrderRequest> request) {
 
-        return ResponseEntity.ok(response);
+        StopoverUpdateOrderCommand command = new StopoverUpdateOrderCommand(
+                1L,
+                request.stream()
+                        .map(r -> new StopoverUpdateOrderCommand.UpdateOrderInfo(
+                                r.stopoverNo(),
+                                r.stopoverSequence()
+                        )).toList()
+        );
+        stopoverService.updateOrder(command);
+
+        return ResponseEntity.ok().build();
     }
 
 

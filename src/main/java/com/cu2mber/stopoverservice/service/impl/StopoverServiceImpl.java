@@ -4,8 +4,8 @@ import com.cu2mber.stopoverservice.common.exception.StopoverErrorCode;
 import com.cu2mber.stopoverservice.common.exception.StopoverException;
 import com.cu2mber.stopoverservice.dto.command.StopoverCreateCommand;
 import com.cu2mber.stopoverservice.dto.command.StopoverUpdateCommand;
+import com.cu2mber.stopoverservice.dto.command.StopoverUpdateOrderCommand;
 import com.cu2mber.stopoverservice.dto.response.StopoverResponse;
-import com.cu2mber.stopoverservice.dto.request.StopoverUpdateOrderRequest;
 import com.cu2mber.stopoverservice.repository.StopoverRepository;
 import com.cu2mber.stopoverservice.service.StopoverService;
 import com.cu2mber.stopoverservice.domain.Stopover;
@@ -56,18 +56,20 @@ public class StopoverServiceImpl implements StopoverService {
                 .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND, command.stopoverName()));
 
         existStopover(command.memberLocalNo(), command.stopoverName());
-
         stopover.update(command.stopoverName());
+        stopover.normalizeName();
         return getStopoverResponse(stopover);
     }
 
     @Override
-    public StopoverResponse updateOrder(Long stopoverNo, StopoverUpdateOrderRequest request) {
-        Stopover stopover = stopoverRepository.findById(stopoverNo)
-                .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND));
+    public void updateOrder(StopoverUpdateOrderCommand command) {
 
-        stopover.updateOrder(request.stopoverSequence());
-        return getStopoverResponse(stopover);
+        for(StopoverUpdateOrderCommand.UpdateOrderInfo req : command.info()) {
+            Stopover stopover = stopoverRepository.findById(req.stopoverNo())
+                    .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND));
+
+            stopover.updateOrder(req.stopoverSequence());
+        }
     }
 
     @Override

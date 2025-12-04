@@ -61,8 +61,8 @@ public class Stopover {
         this.stopoverName = stopoverName;
     }
 
-    public void updateOrder(int stopoverOrder){
-        this.stopoverSequence = stopoverOrder;
+    public void updateOrder(int stopoverSequence){
+        this.stopoverSequence = stopoverSequence;
     }
 
     public void delete(){

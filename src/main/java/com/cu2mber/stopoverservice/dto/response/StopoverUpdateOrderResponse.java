@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor
-public class StopoverResponse {
+public class StopoverUpdateOrderResponse {
 
     @JsonProperty("no")
     Long stopoverNo;
@@ -23,12 +23,4 @@ public class StopoverResponse {
 
     @JsonProperty("sequence")
     int stopoverSequence;
-
-    @QueryProjection
-    public StopoverResponse(Long stopoverNo, Long memberLocalNo, String stopoverName, int stopoverSequence) {
-        this.stopoverNo = stopoverNo;
-        this.memberLocalNo = memberLocalNo;
-        this.stopoverName = stopoverName;
-        this.stopoverSequence = stopoverSequence;
-    }
 }
