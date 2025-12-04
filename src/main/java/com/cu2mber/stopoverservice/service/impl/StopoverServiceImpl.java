@@ -2,14 +2,18 @@ package com.cu2mber.stopoverservice.service.impl;
 
 import com.cu2mber.stopoverservice.common.exception.StopoverErrorCode;
 import com.cu2mber.stopoverservice.common.exception.StopoverException;
+import com.cu2mber.stopoverservice.dto.PageResult;
 import com.cu2mber.stopoverservice.dto.command.StopoverCreateCommand;
 import com.cu2mber.stopoverservice.dto.command.StopoverUpdateCommand;
 import com.cu2mber.stopoverservice.dto.command.StopoverUpdateOrderCommand;
 import com.cu2mber.stopoverservice.dto.response.StopoverResponse;
+import com.cu2mber.stopoverservice.dto.response.StopoverSummaryResponse;
 import com.cu2mber.stopoverservice.repository.StopoverRepository;
 import com.cu2mber.stopoverservice.service.StopoverService;
 import com.cu2mber.stopoverservice.domain.Stopover;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +46,23 @@ public class StopoverServiceImpl implements StopoverService {
                 .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND, stopoverNo));
 
         return getStopoverResponse(stopover);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public StopoverResponse getStopoverByLocal(Long localNo) {
+        Stopover stopover = stopoverRepository.findByMemberLocalNo(localNo)
+                .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND, localNo));
+
+        return getStopoverResponse(stopover);
+    }
+
+    @Override
+    public PageResult<StopoverSummaryResponse> getStopoverPage(Pageable pageable) {
+        Page<StopoverSummaryResponse> stopoverPage = stopoverRepository.findStopoverPage(pageable);
+        List<StopoverSummaryResponse> summaryList = stopoverPage.stream().toList();
+
+        return new PageResult<>(summaryList, stopoverPage.getTotalElements(), stopoverPage.getTotalPages());
     }
 
     @Override

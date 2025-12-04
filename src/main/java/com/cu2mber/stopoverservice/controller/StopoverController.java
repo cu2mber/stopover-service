@@ -1,5 +1,6 @@
 package com.cu2mber.stopoverservice.controller;
 
+import com.cu2mber.stopoverservice.dto.PageResult;
 import com.cu2mber.stopoverservice.dto.command.StopoverCreateCommand;
 import com.cu2mber.stopoverservice.dto.command.StopoverUpdateCommand;
 import com.cu2mber.stopoverservice.dto.command.StopoverUpdateOrderCommand;
@@ -7,9 +8,12 @@ import com.cu2mber.stopoverservice.dto.request.StopoverCreateRequest;
 import com.cu2mber.stopoverservice.dto.response.StopoverResponse;
 import com.cu2mber.stopoverservice.dto.request.StopoverUpdateOrderRequest;
 import com.cu2mber.stopoverservice.dto.request.StopoverUpdateRequest;
+import com.cu2mber.stopoverservice.dto.response.StopoverSummaryResponse;
 import com.cu2mber.stopoverservice.service.StopoverService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,8 +47,22 @@ public class StopoverController {
         return ResponseEntity.ok(response);
     }
 
-    // 지자체용
+    @GetMapping("/locals/{local-no}")
+    public ResponseEntity<StopoverResponse> getStopoverByLocalNo(@PathVariable("local-no") Long localNo) {
+        StopoverResponse response = stopoverService.getStopoverByLocal(localNo);
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping
+    public ResponseEntity<PageResult<StopoverSummaryResponse>> getStopovers(@PageableDefault(size = 10) Pageable pageable) {
+        PageResult<StopoverSummaryResponse> responseList = stopoverService.getStopoverPage(pageable);
+
+        return ResponseEntity.ok(responseList);
+    }
+
+    // 지자체용
+    @GetMapping("/locals")
     public ResponseEntity<List<StopoverResponse>> getStopoversForLocal() {
         // todo: 지자체 멤버 ID
         List<StopoverResponse> responseList = stopoverService.getStopoverList(1L);
@@ -66,7 +84,7 @@ public class StopoverController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/order")
+    @PutMapping("/orders")
     public ResponseEntity<StopoverResponse> updateOrder(@Valid @RequestBody List<StopoverUpdateOrderRequest> request) {
 
         StopoverUpdateOrderCommand command = new StopoverUpdateOrderCommand(
