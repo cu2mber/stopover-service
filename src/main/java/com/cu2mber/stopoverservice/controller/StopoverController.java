@@ -90,9 +90,11 @@ public class StopoverController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/locals/{localNo}")
-    public ResponseEntity<Void> deleteStopovers(@PathVariable("localNo") Long memberLocalNo) {
-        stopoverService.deleteAll(memberLocalNo);
+    @DeleteMapping
+    public ResponseEntity<Void> deleteStopovers() {
+        // todo: 지자체 멤버 추출
+
+        stopoverService.deleteAll(1L);
 
         return ResponseEntity.ok().build();
     }

@@ -25,7 +25,8 @@ public class CustomStopoverRepositoryImpl implements CustomStopoverRepository {
                     .from(qStopover)
                     .where(
                             qStopover.memberLocalNo.eq(memberLocalNo),
-                            qStopover.stopoverNameNormalized.eq(normalized)
+                            qStopover.stopoverNameNormalized.eq(normalized),
+                            qStopover.stopoverDeletion.isFalse()
                     )
                     .fetchOne();
 
@@ -40,7 +41,10 @@ public class CustomStopoverRepositoryImpl implements CustomStopoverRepository {
                         qStopover.stopoverName,
                         qStopover.stopoverSequence))
                 .from(qStopover)
-                .where(qStopover.memberLocalNo.eq(memberLocalNo), qStopover.stopoverDeletion.isFalse())
+                .where(
+                        qStopover.memberLocalNo.eq(memberLocalNo),
+                        qStopover.stopoverDeletion.isFalse()
+                )
                 .orderBy(qStopover.stopoverSequence.asc())
                 .fetch();
     }
@@ -50,7 +54,10 @@ public class CustomStopoverRepositoryImpl implements CustomStopoverRepository {
         return Optional.ofNullable(queryFactory
                 .select(qStopover.stopoverSequence.max())
                 .from(qStopover)
-                .where(qStopover.memberLocalNo.eq(memberLocalNo))
+                .where(
+                        qStopover.memberLocalNo.eq(memberLocalNo),
+                        qStopover.stopoverDeletion.isFalse()
+                )
                 .fetchOne());
     }
 
