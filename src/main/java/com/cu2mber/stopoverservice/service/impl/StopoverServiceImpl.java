@@ -49,15 +49,6 @@ public class StopoverServiceImpl implements StopoverService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public StopoverResponse getStopoverByLocal(Long localNo) {
-        Stopover stopover = stopoverRepository.findByMemberLocalNo(localNo)
-                .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND, localNo));
-
-        return getStopoverResponse(stopover);
-    }
-
-    @Override
     public PageResult<StopoverSummaryResponse> getStopoverPage(Pageable pageable) {
         Page<StopoverSummaryResponse> stopoverPage = stopoverRepository.findStopoverPage(pageable);
         List<StopoverSummaryResponse> summaryList = stopoverPage.stream().toList();

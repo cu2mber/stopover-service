@@ -14,8 +14,6 @@ public interface StopoverService {
 
     StopoverResponse create(StopoverCreateCommand command);
 
-    StopoverResponse getStopoverByLocal(Long localNo);
-
     StopoverResponse getStopover(Long stopoverNo);
 
     PageResult<StopoverSummaryResponse> getStopoverPage(Pageable pageable);

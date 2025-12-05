@@ -47,16 +47,16 @@ public class StopoverController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/locals/{local-no}")
-    public ResponseEntity<StopoverResponse> getStopoverByLocalNo(@PathVariable("local-no") Long localNo) {
-        StopoverResponse response = stopoverService.getStopoverByLocal(localNo);
-
-        return ResponseEntity.ok(response);
-    }
-
     @GetMapping
     public ResponseEntity<PageResult<StopoverSummaryResponse>> getStopovers(@PageableDefault(size = 10) Pageable pageable) {
         PageResult<StopoverSummaryResponse> responseList = stopoverService.getStopoverPage(pageable);
+
+        return ResponseEntity.ok(responseList);
+    }
+
+    @GetMapping("/locals/{local-no}")
+    public ResponseEntity<List<StopoverResponse>> getStopoverForUser(@PathVariable("local-no") Long localNo) {
+        List<StopoverResponse> responseList = stopoverService.getStopoverList(localNo);
 
         return ResponseEntity.ok(responseList);
     }
