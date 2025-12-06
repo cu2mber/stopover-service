@@ -105,7 +105,7 @@ public class StopoverController {
     public ResponseEntity<Void> deleteStopover(@PathVariable("no") Long no){
         stopoverService.delete(no);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping
@@ -114,6 +114,6 @@ public class StopoverController {
 
         stopoverService.deleteAll(1L);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

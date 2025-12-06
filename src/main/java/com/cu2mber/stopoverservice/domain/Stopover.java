@@ -18,7 +18,7 @@ public class Stopover {
     @Column(name = "stopover_no")
     private Long stopoverNo;
 
-    @Column(name = "member_local_no", columnDefinition = "bigint", nullable = false)
+    @Column(name = "member_local_no", columnDefinition = "smallint", nullable = false)
     @Comment("지자체 멤버 번호")
     private Long memberLocalNo;
 
