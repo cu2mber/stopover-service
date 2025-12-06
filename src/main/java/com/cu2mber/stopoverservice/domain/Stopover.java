@@ -26,14 +26,14 @@ public class Stopover {
     @Comment("경유지이름")
     private String stopoverName;
 
-    @Column(name = "stopover_name_normalized", length = 255,nullable = false)
+    @Column(name = "stopover_name_normalized", length = 255, nullable = false)
     private String stopoverNameNormalized;
 
     @Column(name = "stopover_sequence", columnDefinition = "tinyint", nullable = false)
     @Comment("순서")
     private Integer stopoverSequence;
 
-    @Column(name = "stopover_deletion", columnDefinition = "tinyint", nullable = true)
+    @Column(name = "stopover_deletion", columnDefinition = "tinyint", nullable = false)
     @Comment("삭제여부")
     private boolean stopoverDeletion;
 
