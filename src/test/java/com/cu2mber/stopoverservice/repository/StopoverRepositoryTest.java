@@ -2,7 +2,7 @@ package com.cu2mber.stopoverservice.repository;
 
 import com.cu2mber.stopoverservice.common.config.CommonConfig;
 import com.cu2mber.stopoverservice.domain.Stopover;
-import com.cu2mber.stopoverservice.dto.StopoverResponse;
+import com.cu2mber.stopoverservice.dto.response.StopoverResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,25 +33,41 @@ class StopoverRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        stopover = Stopover.ofNewStopover(1, "김해시청", 2);
-        stopover2 = Stopover.ofNewStopover(1, "인제대", 1);
+        stopover = Stopover.ofNewStopover(1L, "김해 시청", 2);
+        stopover2 = Stopover.ofNewStopover(1L, "인제대", 1);
+
+        stopover.normalizeName();
+        stopover2.normalizeName();
 
         entityManager.persist(stopover);
         entityManager.persist(stopover2);
         entityManager.flush();
     }
+    @Test
+    @DisplayName("지자체에서 입력한 경유지가 있는 경우 - 같은 이름")
+    void existsByLocalAndStopover_true() {
+        boolean exist = stopoverRepository.existsByLocalAndStopover(1L, "김해 시청");
+        assertTrue(exist);
+    }
 
     @Test
-    @DisplayName("지자체에서 입력한 경유지가 있는 경우")
-    void existsByLocalAndStopover_true() {
-        boolean exist = stopoverRepository.existsByLocalAndStopover(1, "김해시청");
+    @DisplayName("지자체에서 입력한 경유지가 있는 경우 - 다른 공백")
+    void existsByLocalAndStopover_true_normalized() {
+        boolean exist = stopoverRepository.existsByLocalAndStopover(1L, "김해시 청");
+        assertTrue(exist);
+    }
+
+    @Test
+    @DisplayName("지자체에서 입력한 경유지가 있는 경우 - 공백X")
+    void existsByLocalAndStopover_true_no_whitespace() {
+        boolean exist = stopoverRepository.existsByLocalAndStopover(1L, "김해시청");
         assertTrue(exist);
     }
 
     @Test
     @DisplayName("지자체에서 입력한 경유지가 없는 경우")
     void existsByLocalAndStopover_false() {
-        boolean exist = stopoverRepository.existsByLocalAndStopover(1, "장유터미널");
+        boolean exist = stopoverRepository.existsByLocalAndStopover(1L, "장유터미널");
         assertFalse(exist);
     }
 
@@ -59,7 +75,7 @@ class StopoverRepositoryTest {
     @DisplayName("경유지 리스트 찾기 - QueryDSL")
     void findStopoverList() {
 
-        List<StopoverResponse> responses = stopoverRepository.findStopoverList(1);
+        List<StopoverResponse> responses = stopoverRepository.findStopoverList(1L);
 
         assertFalse(responses.isEmpty());
 
@@ -67,23 +83,23 @@ class StopoverRepositoryTest {
                 () -> {
                     assertEquals(2, responses.size());
                     assertEquals("인제대", responses.getFirst().getStopoverName());
-                    assertEquals("김해시청", responses.get(1).getStopoverName());
+                    assertEquals("김해 시청", responses.get(1).getStopoverName());
                 }
         );
     }
 
     @Test
     @DisplayName("경유지 리스트 찾기 - JPA")
-    void findAllByLocalNo() {
+    void findAllByMemberLocalNoNo() {
 
-        List<Stopover> responses = stopoverRepository.findAllByLocalNo(1);
+        List<Stopover> responses = stopoverRepository.findAllByMemberLocalNo(1L);
 
         assertFalse(responses.isEmpty());
 
         assertAll(
                 () -> {
                     assertEquals(2, responses.size());
-                    assertEquals("김해시청", responses.getFirst().getStopoverName());
+                    assertEquals("김해 시청", responses.getFirst().getStopoverName());
                     assertEquals("인제대", responses.get(1).getStopoverName());
                 }
         );

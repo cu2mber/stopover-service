@@ -2,14 +2,18 @@ package com.cu2mber.stopoverservice.service.impl;
 
 import com.cu2mber.stopoverservice.common.exception.StopoverErrorCode;
 import com.cu2mber.stopoverservice.common.exception.StopoverException;
-import com.cu2mber.stopoverservice.dto.StopoverRequest;
-import com.cu2mber.stopoverservice.dto.StopoverResponse;
-import com.cu2mber.stopoverservice.dto.StopoverUpdateOrderRequest;
-import com.cu2mber.stopoverservice.dto.StopoverUpdateRequest;
+import com.cu2mber.stopoverservice.dto.PageResult;
+import com.cu2mber.stopoverservice.dto.command.StopoverCreateCommand;
+import com.cu2mber.stopoverservice.dto.command.StopoverUpdateCommand;
+import com.cu2mber.stopoverservice.dto.command.StopoverUpdateOrderCommand;
+import com.cu2mber.stopoverservice.dto.response.StopoverResponse;
+import com.cu2mber.stopoverservice.dto.response.StopoverSummaryResponse;
 import com.cu2mber.stopoverservice.repository.StopoverRepository;
 import com.cu2mber.stopoverservice.service.StopoverService;
 import com.cu2mber.stopoverservice.domain.Stopover;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,11 +26,14 @@ public class StopoverServiceImpl implements StopoverService {
     private final StopoverRepository stopoverRepository;
 
     @Override
-    public StopoverResponse create(StopoverRequest request) {
+    public StopoverResponse create(StopoverCreateCommand command) {
 
-        existStopover(request.getLocalNo(), request.getStopoverName());
+        existStopover(command.memberLocalNo(), command.stopoverName());
+        int nextSequence = stopoverRepository.findMaxSequenceByLocalNo(command.memberLocalNo())
+                .orElse(0) + 1;
 
-        Stopover stopover = Stopover.ofNewStopover(request.getLocalNo(), request.getStopoverName(), request.getStopoverOrder());
+        Stopover stopover = Stopover.ofNewStopover(command.memberLocalNo(), command.stopoverName(), nextSequence);
+        stopover.normalizeName();
         stopoverRepository.save(stopover);
 
         return getStopoverResponse(stopover);
@@ -42,29 +49,39 @@ public class StopoverServiceImpl implements StopoverService {
     }
 
     @Override
+    public PageResult<StopoverSummaryResponse> getStopoverPage(Pageable pageable) {
+        Page<StopoverSummaryResponse> stopoverPage = stopoverRepository.findStopoverPage(pageable);
+        List<StopoverSummaryResponse> summaryList = stopoverPage.stream().toList();
+
+        return new PageResult<>(summaryList, stopoverPage.getTotalElements(), stopoverPage.getTotalPages());
+    }
+
+    @Override
     @Transactional(readOnly = true)
-    public List<StopoverResponse> getStopoverList(int localNo) {
-        return stopoverRepository.findStopoverList(localNo);
+    public List<StopoverResponse> getStopoverList(Long memberLocalNo) {
+        return stopoverRepository.findStopoverList(memberLocalNo);
     }
 
     @Override
-    public StopoverResponse update(Long stopoverNo, StopoverUpdateRequest request) {
-        Stopover stopover = stopoverRepository.findById(stopoverNo)
-                .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND, request.getStopoverName()));
+    public StopoverResponse update(StopoverUpdateCommand command) {
+        Stopover stopover = stopoverRepository.findById(command.stopoverNo())
+                .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND, command.stopoverName()));
 
-        existStopover(request.getLocalNo(), request.getStopoverName());
-
-        stopover.update(request.getStopoverName());
+        existStopover(command.memberLocalNo(), command.stopoverName());
+        stopover.update(command.stopoverName());
+        stopover.normalizeName();
         return getStopoverResponse(stopover);
     }
 
     @Override
-    public StopoverResponse updateOrder(Long stopoverNo, StopoverUpdateOrderRequest request) {
-        Stopover stopover = stopoverRepository.findById(stopoverNo)
-                .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND));
+    public void updateOrder(StopoverUpdateOrderCommand command) {
 
-        stopover.updateOrder(request.getStopoverOrder());
-        return getStopoverResponse(stopover);
+        for(StopoverUpdateOrderCommand.UpdateOrderInfo req : command.info()) {
+            Stopover stopover = stopoverRepository.findById(req.stopoverNo())
+                    .orElseThrow(() -> new StopoverException(StopoverErrorCode.STOPOVER_NOT_FOUND));
+
+            stopover.updateOrder(req.stopoverSequence());
+        }
     }
 
     @Override
@@ -75,8 +92,8 @@ public class StopoverServiceImpl implements StopoverService {
     }
 
     @Override
-    public void deleteAll(int localNo) {
-        List<Stopover> stopovers = stopoverRepository.findAllByLocalNo(localNo);
+    public void deleteAll(Long memberLocalNo) {
+        List<Stopover> stopovers = stopoverRepository.findAllByMemberLocalNo(memberLocalNo);
 
         if(stopovers.isEmpty()) {
             throw new StopoverException(StopoverErrorCode.STOPOVER_LIST_EMPTY);
@@ -87,11 +104,11 @@ public class StopoverServiceImpl implements StopoverService {
     }
 
     private StopoverResponse getStopoverResponse(Stopover stopover) {
-        return new StopoverResponse(stopover.getStopoverNo(), stopover.getLocalNo(), stopover.getStopoverName(), stopover.getStopoverOrder());
+        return new StopoverResponse(stopover.getStopoverNo(), stopover.getMemberLocalNo(), stopover.getStopoverName(), stopover.getStopoverSequence());
     }
 
-    private void existStopover(int localNo, String stopoverName) {
-        if(stopoverRepository.existsByLocalAndStopover(localNo, stopoverName)) {
+    private void existStopover(Long memberLocalNo, String stopoverName) {
+        if(stopoverRepository.existsByLocalAndStopover(memberLocalNo, stopoverName)) {
             throw new StopoverException(StopoverErrorCode.STOPOVER_CONFLICT);
         }
     }

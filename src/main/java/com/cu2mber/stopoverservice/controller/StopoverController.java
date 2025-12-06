@@ -1,12 +1,19 @@
 package com.cu2mber.stopoverservice.controller;
 
-import com.cu2mber.stopoverservice.dto.StopoverRequest;
-import com.cu2mber.stopoverservice.dto.StopoverResponse;
-import com.cu2mber.stopoverservice.dto.StopoverUpdateOrderRequest;
-import com.cu2mber.stopoverservice.dto.StopoverUpdateRequest;
+import com.cu2mber.stopoverservice.dto.PageResult;
+import com.cu2mber.stopoverservice.dto.command.StopoverCreateCommand;
+import com.cu2mber.stopoverservice.dto.command.StopoverUpdateCommand;
+import com.cu2mber.stopoverservice.dto.command.StopoverUpdateOrderCommand;
+import com.cu2mber.stopoverservice.dto.request.StopoverCreateRequest;
+import com.cu2mber.stopoverservice.dto.response.StopoverResponse;
+import com.cu2mber.stopoverservice.dto.request.StopoverUpdateOrderRequest;
+import com.cu2mber.stopoverservice.dto.request.StopoverUpdateRequest;
+import com.cu2mber.stopoverservice.dto.response.StopoverSummaryResponse;
 import com.cu2mber.stopoverservice.service.StopoverService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +28,14 @@ public class StopoverController {
     private final StopoverService stopoverService;
 
     @PostMapping
-    public ResponseEntity<StopoverResponse> saveStopover(@Valid @RequestBody StopoverRequest request) {
+    public ResponseEntity<StopoverResponse> createStopover(@Valid @RequestBody StopoverCreateRequest request) {
 
-        StopoverResponse response = stopoverService.create(request);
+        // 생성자 ID로 지자체 멤버 서비스 조회
+        StopoverCreateCommand command = new StopoverCreateCommand(
+                1L, // todo: 지자체 멤버 ID
+                request.stopoverName()
+        );
+        StopoverResponse response = stopoverService.create(command);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -35,25 +47,57 @@ public class StopoverController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/locals/{localNo}")
-    public ResponseEntity<List<StopoverResponse>> getStopovers(@PathVariable("localNo") int localNo) {
+    @GetMapping
+    public ResponseEntity<PageResult<StopoverSummaryResponse>> getStopovers(@PageableDefault(size = 10) Pageable pageable) {
+        PageResult<StopoverSummaryResponse> responseList = stopoverService.getStopoverPage(pageable);
+
+        return ResponseEntity.ok(responseList);
+    }
+
+    @GetMapping("/locals/{local-no}")
+    public ResponseEntity<List<StopoverResponse>> getStopoverForUser(@PathVariable("local-no") Long localNo) {
         List<StopoverResponse> responseList = stopoverService.getStopoverList(localNo);
+
+        return ResponseEntity.ok(responseList);
+    }
+
+    // 지자체용
+    @GetMapping("/locals")
+    public ResponseEntity<List<StopoverResponse>> getStopoversForLocal() {
+        // todo: 지자체 멤버 ID
+        List<StopoverResponse> responseList = stopoverService.getStopoverList(1L);
 
         return ResponseEntity.ok(responseList);
     }
 
     @PutMapping("/{no}")
     public ResponseEntity<StopoverResponse> updateStopover(@PathVariable("no") Long no, @Valid @RequestBody StopoverUpdateRequest request) {
-        StopoverResponse response =  stopoverService.update(no, request);
+
+        StopoverUpdateCommand command = new StopoverUpdateCommand(
+                no,
+                1L, // todo: 지자체 멤버 ID
+                request.stopoverName()
+        );
+
+        StopoverResponse response =  stopoverService.update(command);
 
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{no}/order")
-    public ResponseEntity<StopoverResponse> updateOrder(@PathVariable("no") Long no, @Valid @RequestBody StopoverUpdateOrderRequest request) {
-        StopoverResponse response = stopoverService.updateOrder(no, request);
+    @PutMapping("/orders")
+    public ResponseEntity<StopoverResponse> updateOrder(@Valid @RequestBody List<StopoverUpdateOrderRequest> request) {
 
-        return ResponseEntity.ok(response);
+        StopoverUpdateOrderCommand command = new StopoverUpdateOrderCommand(
+                1L,
+                request.stream()
+                        .map(r -> new StopoverUpdateOrderCommand.UpdateOrderInfo(
+                                r.stopoverNo(),
+                                r.stopoverSequence()
+                        )).toList()
+        );
+        stopoverService.updateOrder(command);
+
+        return ResponseEntity.ok().build();
     }
 
 
@@ -61,13 +105,15 @@ public class StopoverController {
     public ResponseEntity<Void> deleteStopover(@PathVariable("no") Long no){
         stopoverService.delete(no);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/locals/{localNo}")
-    public ResponseEntity<Void> deleteStopovers(@PathVariable("localNo") int localNo) {
-        stopoverService.deleteAll(localNo);
+    @DeleteMapping
+    public ResponseEntity<Void> deleteStopovers() {
+        // todo: 지자체 멤버 추출
 
-        return ResponseEntity.ok().build();
+        stopoverService.deleteAll(1L);
+
+        return ResponseEntity.noContent().build();
     }
 }

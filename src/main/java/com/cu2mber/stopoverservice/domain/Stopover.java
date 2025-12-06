@@ -18,19 +18,22 @@ public class Stopover {
     @Column(name = "stopover_no")
     private Long stopoverNo;
 
-    @Column(name = "local_no", columnDefinition = "tinyint", nullable = false)
-    @Comment("지자체번호")
-    private int localNo;
+    @Column(name = "member_local_no", columnDefinition = "smallint", nullable = false)
+    @Comment("지자체 멤버 번호")
+    private Long memberLocalNo;
 
     @Column(name = "stopover_name", length = 255, nullable = false)
     @Comment("경유지이름")
     private String stopoverName;
 
-    @Column(name = "stopover_order", columnDefinition = "tinyint", nullable = false)
-    @Comment("순서")
-    private int stopoverOrder;
+    @Column(name = "stopover_name_normalized", length = 255, nullable = false)
+    private String stopoverNameNormalized;
 
-    @Column(name = "stopover_deletion", columnDefinition = "tinyint", nullable = true)
+    @Column(name = "stopover_sequence", columnDefinition = "tinyint", nullable = false)
+    @Comment("순서")
+    private Integer stopoverSequence;
+
+    @Column(name = "stopover_deletion", columnDefinition = "tinyint", nullable = false)
     @Comment("삭제여부")
     private boolean stopoverDeletion;
 
@@ -38,24 +41,28 @@ public class Stopover {
     @Comment("삭제일시")
     private LocalDateTime deletedAt;
 
-    private Stopover(int localNo, String stopoverName, int stopoverOrder, boolean stopoverDeletion, LocalDateTime deletedAt){
-        this.localNo = localNo;
+    private Stopover(Long memberLocalNo, String stopoverName, int stopoverSequence, boolean stopoverDeletion, LocalDateTime deletedAt){
+        this.memberLocalNo = memberLocalNo;
         this.stopoverName = stopoverName;
-        this.stopoverOrder = stopoverOrder;
+        this.stopoverSequence = stopoverSequence;
         this.stopoverDeletion = stopoverDeletion;
         this.deletedAt = deletedAt;
     }
 
-    public static Stopover ofNewStopover(int localNo, String stopoverName, int stopoverOrder){
-        return new Stopover(localNo, stopoverName, stopoverOrder, false, null);
+    public static Stopover ofNewStopover(Long memberLocalNo, String stopoverName, int sequence){
+        return new Stopover(memberLocalNo, stopoverName, sequence, false, null);
+    }
+
+    public void normalizeName() {
+        this.stopoverNameNormalized = this.stopoverName.replaceAll("\\s+", "").trim();
     }
 
     public void update(String stopoverName) {
         this.stopoverName = stopoverName;
     }
 
-    public void updateOrder(int stopoverOrder){
-        this.stopoverOrder = stopoverOrder;
+    public void updateOrder(int stopoverSequence){
+        this.stopoverSequence = stopoverSequence;
     }
 
     public void delete(){
