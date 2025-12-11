@@ -33,6 +33,9 @@ public class Stopover {
     @Comment("순서")
     private Integer stopoverSequence;
 
+    @Column(name = "created_at", updatable = false, nullable = false)
+    private LocalDateTime createdAt;
+
     @Column(name = "stopover_deletion", columnDefinition = "tinyint", nullable = false)
     @Comment("삭제여부")
     private boolean stopoverDeletion;
@@ -40,6 +43,11 @@ public class Stopover {
     @Column(name = "deleted_at", nullable = true)
     @Comment("삭제일시")
     private LocalDateTime deletedAt;
+
+    @PrePersist
+    private void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     private Stopover(Long memberLocalNo, String stopoverName, int stopoverSequence, boolean stopoverDeletion, LocalDateTime deletedAt){
         this.memberLocalNo = memberLocalNo;
