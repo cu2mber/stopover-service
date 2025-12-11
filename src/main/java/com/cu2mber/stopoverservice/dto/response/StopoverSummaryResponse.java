@@ -1,10 +1,14 @@
 package com.cu2mber.stopoverservice.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
+
+import java.time.LocalDateTime;
 
 /**
  * 경유지(Stopover) 목록 조회 시 사용되는 요약 응답 DTO입니다.
@@ -21,27 +25,32 @@ import lombok.ToString;
 public class StopoverSummaryResponse {
 
     /**
-     * 경유지 식별 번호.
-     */
-    @JsonProperty("no")
-    Long stopoverNo;
-
-    /**
      * 경유지가 속한 지역(memberLocal)의 식별 번호.
      */
     Long memberLocalNo;
 
-    // String localName;
+    /**
+     * 경유지가 속한 지역(memberLocal)의 이름.
+     */
+    @Setter
+    @JsonProperty("local")
+    String localName;
+
+    /**
+     * 경유지가 생성된 일자.
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    LocalDateTime createdAt;
 
     /**
      * Querydsl 기반 프로젝션을 위한 생성자입니다.
      *
-     * @param stopoverNo     경유지 번호
      * @param memberLocalNo  지역(memberLocal) 번호
+     * @param createdAt     경유지 생성일자
      */
     @QueryProjection
-    public StopoverSummaryResponse(Long stopoverNo, Long memberLocalNo) {
-        this.stopoverNo = stopoverNo;
+    public StopoverSummaryResponse(Long memberLocalNo, LocalDateTime createdAt) {
         this.memberLocalNo = memberLocalNo;
+        this.createdAt = createdAt;
     }
 }

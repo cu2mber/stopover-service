@@ -42,15 +42,16 @@ public class CustomStopoverRepositoryImpl implements CustomStopoverRepository {
     @Override
     public Page<StopoverSummaryResponse> findStopoverPage(Pageable pageable) {
         List<StopoverSummaryResponse> list = queryFactory.select(new QStopoverSummaryResponse(
-                        qStopover.stopoverNo,
-                        qStopover.memberLocalNo))
+                        qStopover.memberLocalNo,
+                        qStopover.createdAt.min()
+                ))
                 .from(qStopover)
-                .orderBy(qStopover.stopoverSequence.asc())
                 .offset(pageable.getOffset())
+                .groupBy(qStopover.memberLocalNo)
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        JPAQuery<Long> count = queryFactory.select((qStopover.count()))
+        JPAQuery<Long> count = queryFactory.select((qStopover.memberLocalNo.countDistinct()))
                 .from(qStopover);
 
         return PageableExecutionUtils.getPage(list, pageable, count::fetchOne);
@@ -62,7 +63,9 @@ public class CustomStopoverRepositoryImpl implements CustomStopoverRepository {
                         qStopover.stopoverNo,
                         qStopover.memberLocalNo,
                         qStopover.stopoverName,
-                        qStopover.stopoverSequence))
+                        qStopover.stopoverSequence,
+                        qStopover.createdAt
+                        ))
                 .from(qStopover)
                 .where(
                         qStopover.memberLocalNo.eq(memberLocalNo),

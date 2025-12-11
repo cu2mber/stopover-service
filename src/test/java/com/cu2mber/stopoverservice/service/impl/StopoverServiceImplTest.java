@@ -18,6 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,8 +95,8 @@ class StopoverServiceImplTest {
     @DisplayName("경유지 조회(지자체)")
     void getStopoverList() {
         List<StopoverResponse> newResponseList = List.of(
-                new StopoverResponse(1L, 1L, "김해시청", 2),
-                new StopoverResponse(2L, 1L, "인제대", 1)
+                new StopoverResponse(1L, 1L, "김해시청", 2, LocalDateTime.now()),
+                new StopoverResponse(2L, 1L, "인제대", 1, LocalDateTime.now())
         );
         when(stopoverRepository.findStopoverList(Mockito.anyLong())).thenReturn(newResponseList);
 

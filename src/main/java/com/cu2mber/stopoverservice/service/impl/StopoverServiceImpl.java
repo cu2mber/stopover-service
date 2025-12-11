@@ -51,6 +51,17 @@ public class StopoverServiceImpl implements StopoverService {
     @Override
     public PageResult<StopoverSummaryResponse> getStopoverPage(Pageable pageable) {
         Page<StopoverSummaryResponse> stopoverPage = stopoverRepository.findStopoverPage(pageable);
+        /**
+         * todo 지자체 이름 설정 수정
+         * 방법 1. Cache + BatchAPI
+         */
+        stopoverPage.forEach(stopover -> {
+            if(stopover.getMemberLocalNo() == 1) {
+                stopover.setLocalName("김해시");
+            } else if(stopover.getMemberLocalNo() == 2) {
+                stopover.setLocalName("부산 남구");
+            }
+        });
         List<StopoverSummaryResponse> summaryList = stopoverPage.stream().toList();
 
         return new PageResult<>(summaryList, stopoverPage.getTotalElements(), stopoverPage.getTotalPages());
@@ -59,7 +70,15 @@ public class StopoverServiceImpl implements StopoverService {
     @Override
     @Transactional(readOnly = true)
     public List<StopoverResponse> getStopoverList(Long memberLocalNo) {
-        return stopoverRepository.findStopoverList(memberLocalNo);
+        List<StopoverResponse> stopoverList = stopoverRepository.findStopoverList(memberLocalNo);
+        stopoverList.forEach(stopover -> {
+            if(stopover.getMemberLocalNo() == 1) {
+                stopover.setLocalName("김해시");
+            } else if(stopover.getMemberLocalNo() == 2) {
+                stopover.setLocalName("부산 남구");
+            }
+        });
+        return stopoverList;
     }
 
     @Override
@@ -104,7 +123,7 @@ public class StopoverServiceImpl implements StopoverService {
     }
 
     private StopoverResponse getStopoverResponse(Stopover stopover) {
-        return new StopoverResponse(stopover.getStopoverNo(), stopover.getMemberLocalNo(), stopover.getStopoverName(), stopover.getStopoverSequence());
+        return new StopoverResponse(stopover.getStopoverNo(), stopover.getMemberLocalNo(), stopover.getStopoverName(), stopover.getStopoverSequence(), stopover.getCreatedAt());
     }
 
     private void existStopover(Long memberLocalNo, String stopoverName) {

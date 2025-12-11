@@ -43,6 +43,7 @@ public interface StopoverService {
     PageResult<StopoverSummaryResponse> getStopoverPage(Pageable pageable);
 
     /**
+     * 지자체용 경유지 목록 조회
      * 특정 지역(memberLocalNo)에 속한 모든 경유지 목록을 조회합니다.
      *
      * @param memberLocalNo 지역 식별 번호
